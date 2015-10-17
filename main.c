@@ -37,7 +37,6 @@
                                    if (SUCCESS != iRetVal) \
                                      return  iRetVal;}
 
-
 typedef enum
 {
     POWERED_UP 	= 0,
@@ -79,7 +78,7 @@ void IRQ0()
 {
 	//STATUS0_ClearFlags();
 
-	UART_PRINT("IRQ0\n");
+	UART_PRINT("IRQ0\r\n");
     Interrupt_Enable(IRQ0_IO);
 }
 
@@ -87,7 +86,7 @@ void IRQ1()
 {
 	//STATUS1_ClearFlags();
 
-	UART_PRINT("IRQ1\n");
+	UART_PRINT("IRQ1\r\n");
     Interrupt_Enable(IRQ1_IO);
 
     /*if(STATE == POWER_UP)
@@ -114,7 +113,7 @@ void ADE7880_PowerUp()
 	ADE7880_PowerMode_Set(PSM0);
 
 	//Initialize Interrupts
-	Button_IF_Init(IRQ0, IRQ1);
+	Interrupt_IF_Init(IRQ0, IRQ1);
 
 	//START the ADE7880
 	ADE7880_Operation(START);
@@ -154,6 +153,7 @@ void main()
 
 	UART_PRINT("Alive\r\n");
 
+	while(1){}
 	//ADE7880_Read(CHECKSUM, &data);
     //UART_PRINT("0x%x \r\n", data);
     /*ADE7880_Write(0xEC00, 0x06, 1);

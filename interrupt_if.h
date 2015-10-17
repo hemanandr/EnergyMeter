@@ -63,7 +63,7 @@ typedef void (*P_INT_HANDLER)(void);
 
 void IRQ0_IntHandler();
 void IRQ1_IntHandler();
-void Button_IF_Init(P_INT_HANDLER S2InterruptHdl,P_INT_HANDLER S1InterruptHdl );
+void Interrupt_IF_Init(P_INT_HANDLER S2InterruptHdl,P_INT_HANDLER S1InterruptHdl );
 void Interrupt_Enable(unsigned char ucSwitch);
 void Interrupt_Disable(unsigned char ucSwitch);
 

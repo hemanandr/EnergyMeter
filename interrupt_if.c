@@ -12,11 +12,12 @@
 #endif
 #include "interrupt_if.h"
 
-#define IRQ0_GPIO_BASE	GPIOA2_BASE	//GPIOA2_BASE
-#define IRQ1_GPIO_BASE	GPIOA1_BASE	//GPIOA1_BASE
+#define IRQ0_GPIO_BASE	GPIOA0_BASE	//GPIOA2_BASE
 #define IRQ0_GPIO_PIN	GPIO_PIN_6	//GPIO_PIN_6
+#define IRQ0_INT		INT_GPIOA0	//INT_GPIOA2
+
+#define IRQ1_GPIO_BASE	GPIOA1_BASE	//GPIOA1_BASE
 #define IRQ1_GPIO_PIN	GPIO_PIN_5	//GPIO_PIN_5
-#define IRQ0_INT		INT_GPIOA2	//INT_GPIOA2
 #define IRQ1_INT		INT_GPIOA1	//INT_GPIOA1
 
 P_INT_HANDLER IRQ0_InterruptHdl;
@@ -43,7 +44,7 @@ void IRQ1_IntHandler()
     }
 }
 
-void Button_IF_Init(P_INT_HANDLER s_IRQ0_InterruptHdl,P_INT_HANDLER s_IRQ1_InterruptHdl )
+void Interrupt_IF_Init(P_INT_HANDLER s_IRQ0_InterruptHdl,P_INT_HANDLER s_IRQ1_InterruptHdl )
 {
     if(s_IRQ1_InterruptHdl != NULL)
     {
@@ -84,9 +85,9 @@ void Button_IF_Init(P_INT_HANDLER s_IRQ0_InterruptHdl,P_INT_HANDLER s_IRQ1_Inter
     }
 }
 
-void Interrupt_Enable(unsigned char ucSwitch)
+void Interrupt_Enable(unsigned char ucInterrupt)
 {
-    if(ucSwitch & IRQ0_IO)
+    if(ucInterrupt & IRQ0_IO)
     {
         MAP_GPIOIntClear(IRQ0_GPIO_BASE,IRQ0_GPIO_PIN);
         MAP_IntPendClear(IRQ0_INT);
@@ -94,7 +95,7 @@ void Interrupt_Enable(unsigned char ucSwitch)
         MAP_GPIOIntEnable(IRQ0_GPIO_BASE,IRQ0_GPIO_PIN);
     }
 
-    if(ucSwitch & IRQ1_IO)
+    if(ucInterrupt & IRQ1_IO)
     {
          MAP_GPIOIntClear(IRQ1_GPIO_BASE,IRQ1_GPIO_PIN);
          MAP_IntPendClear(IRQ1_INT);
@@ -103,16 +104,16 @@ void Interrupt_Enable(unsigned char ucSwitch)
     }
 }
 
-void Interrupt_Disable(unsigned char ucSwitch)
+void Interrupt_Disable(unsigned char ucInterrupt)
 {
-    if(ucSwitch & IRQ0_IO)
+    if(ucInterrupt & IRQ0_IO)
     {
         MAP_GPIOIntDisable(IRQ0_GPIO_BASE,IRQ0_GPIO_PIN);
         MAP_GPIOIntClear(IRQ0_GPIO_BASE,IRQ0_GPIO_PIN);
         MAP_IntDisable(IRQ0_INT);
     }
 
-    if(ucSwitch & IRQ1_IO)
+    if(ucInterrupt & IRQ1_IO)
     {
         MAP_GPIOIntDisable(IRQ1_GPIO_BASE,IRQ1_GPIO_PIN);
         MAP_GPIOIntClear(IRQ1_GPIO_BASE,IRQ1_GPIO_PIN);
