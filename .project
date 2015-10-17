@@ -26,11 +26,6 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>i2c_if.c</name>
-			<type>1</type>
-			<locationURI>CC3200_SDK_ROOT/example/common/i2c_if.c</locationURI>
-		</link>
-		<link>
 			<name>startup_ccs.c</name>
 			<type>1</type>
 			<locationURI>CC3200_SDK_ROOT/example/common/startup_ccs.c</locationURI>

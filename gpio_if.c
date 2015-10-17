@@ -122,7 +122,7 @@ GPIO_IF_Set(unsigned char ucPin, unsigned int uiGPIOPort, unsigned char ucGPIOPi
 unsigned char
 GPIO_IF_Get(unsigned char ucPin, unsigned int uiGPIOPort, unsigned char ucGPIOPin)
 {
-    unsigned char ucGPIOValue;
+	unsigned char ucGPIOValue;
     long lGPIOStatus;
 
     lGPIOStatus =  MAP_GPIOPinRead(uiGPIOPort,ucGPIOPin);
