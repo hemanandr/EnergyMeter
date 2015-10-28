@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 // Driverlib includes
 #include "hw_types.h"
@@ -22,7 +23,7 @@
 #include "gpio_if.h"
 #include "interrupt_if.h"
 #include "pinmux.h"
-#include "registers.h"
+#include "registers_def.h"
 
 #define APPLICATION_VERSION     "1.1.1"
 #define APP_NAME                "I2C Demo"
@@ -72,30 +73,82 @@ BoardInit(void)
     PRCMCC3200MCUInit();
 }
 
+void ADE7880_ClearFlags(Register reg)
+{
+	int flags;
 
+	ADE7880_Read(reg, &flags);
+	ADE7880_Write(reg, flags);
+}
+
+void ADE7880_SetValue(Register reg, int bit, bool value)
+{
+	int data;
+	unsigned short bitPos;
+
+	bitPos = BitPosition(bit);
+
+	data = ADE7880_Read(reg, &data);
+	data = data & (~bit);
+
+	value = value << bitPos;
+
+	data = data | value;
+
+	ADE7880_Write(reg, data);
+}
+
+int ADE7880_GetValue(Register reg, int bit)
+{
+	int data;
+	unsigned short bitPos;
+
+	bitPos = BitPosition(bit);
+
+	data = ADE7880_Read(reg, &data);
+	data = data & bit;
+
+	data = data >> bitPos;
+
+	return data;
+}
+
+void ADE7880_Initialize()
+{
+	//Clear all Status Flags
+	ADE7880_ClearFlags(STATUS0);
+	ADE7880_ClearFlags(STATUS1);
+
+	//Set I2C as the default communcation interface
+	ADE7880_Write(CONFIG2, 0x02);
+
+	//Set other CONFIG Registers and other required gains and stuffs as such
+	//Intialize Gain Registers to a Gain of 1
+	ADE7880_SetValue(Gain, PGA1 | PGA2 | PGA3, 0x0000);
+
+	//Set the State to Initialized
+	STATE = INITIALIZED;
+}
 
 void IRQ0()
 {
-	//STATUS0_ClearFlags();
+	int status;
 
-	UART_PRINT("IRQ0\r\n");
-    Interrupt_Enable(IRQ0_IO);
+	ADE7880_Read(STATUS0, &status);
+    ADE7880_ClearFlags(STATUS0);
+
 }
 
 void IRQ1()
 {
-	//STATUS1_ClearFlags();
+	int status;
 
-	UART_PRINT("IRQ1\r\n");
-    Interrupt_Enable(IRQ1_IO);
+	ADE7880_Read(STATUS1, &status);
 
-    /*if(STATE == POWER_UP)
-    {
-    	if(ADE7880_STATUS1(RSTDONE))
-    	{
-    		ADE7880_Initialize();
-    	}
-    }*/
+	if(status & RSTDONE)	ADE7880_Initialize();
+
+
+	ADE7880_ClearFlags(STATUS1);
 }
 
 void ADE7880_PowerUp()
@@ -104,8 +157,8 @@ void ADE7880_PowerUp()
 	GPIO_IF_Configure();
 
 	//Open I2C Master in Fast Mode
-
 	I2C_IF_Open(I2C_MASTER_MODE_FST);
+
 	//Hold the RESET signal at Low for configuring other GPIO Pins
 	ADE7880_Operation(STOP);
 
@@ -122,28 +175,9 @@ void ADE7880_PowerUp()
 	STATE = POWERED_UP;
 }
 
-void ADE7880_Initialize()
-{
-	//Clear all Status Flags
-	/*STATUS1_ClearFlags();
-	STATUS0_ClearFlags();
-
-	//Set I2C as the default communcation interface
-	Write(CONFIG2, 0x02);
-
-	//Set other CONFIG Registers and other required gains and stuffs as such
-
-	//HSDC Configuration
-	*/
-
-	//Set the State to Initialized
-	STATE = INITIALIZED;
-}
 
 void main()
 {
-	int data;
-
 	BoardInit();
     PinMuxConfig();
 
@@ -151,15 +185,10 @@ void main()
 
     ADE7880_PowerUp();
 
-	UART_PRINT("Alive\r\n");
+	while(1)
+	{
 
-	while(1){}
-	//ADE7880_Read(CHECKSUM, &data);
-    //UART_PRINT("0x%x \r\n", data);
-    /*ADE7880_Write(0xEC00, 0x06, 1);
-    ADE7880_Read(0xEC00, 1, &data);
-    UART_PRINT("0x%x \r\n", data);
-	*/
+	}
 
 }
 

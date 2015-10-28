@@ -29,6 +29,11 @@ void IRQ0_IntHandler()
     if(ulPinState & IRQ0_GPIO_PIN)
     {
         Interrupt_Disable(IRQ0_IO);
+        Interrupt_Disable(IRQ1_IO);
+
+        Interrupt_Enable(IRQ0_IO);
+        Interrupt_Enable(IRQ1_IO);
+
         IRQ0_InterruptHdl();
     }
 }
@@ -39,7 +44,12 @@ void IRQ1_IntHandler()
 
     if(ulPinState & IRQ1_GPIO_PIN)
     {
+        Interrupt_Disable(IRQ0_IO);
         Interrupt_Disable(IRQ1_IO);
+
+        Interrupt_Enable(IRQ0_IO);
+        Interrupt_Enable(IRQ1_IO);
+
         IRQ1_InterruptHdl();
     }
 }

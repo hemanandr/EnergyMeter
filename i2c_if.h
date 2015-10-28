@@ -19,7 +19,7 @@ extern "C"
 
 #define DEV_ADDR				0x38
 
-#include "registers.h"
+#include "registers_def.h"
 
 extern int ADE7880_Read(Register reg, int *data);
 extern int ADE7880_Write(Register reg, int data);

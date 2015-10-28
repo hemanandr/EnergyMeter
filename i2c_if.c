@@ -16,7 +16,8 @@
 
 // Common interface include
 #include "i2c_if.h"
-#include "registers.h"
+
+#include "registers_def.h"
 
 #define I2C_BASE                I2CA0_BASE
 #define SYS_CLK                 80000000
